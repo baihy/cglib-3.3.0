@@ -24,7 +24,7 @@ public class CglibMain {
          */
         System.setProperty(DebuggingClassWriter.DEBUG_LOCATION_PROPERTY, "d:/code");
 
-        IndexService target = new IndexServiceImpl();
+        IndexService target = new IndexServiceImpl("abc");
 
         InvocationHandler invocationHandler0 = getInvocationHandler0(target);
         InvocationHandler invocationHandler1 = getInvocationHandler1(target);
@@ -66,7 +66,8 @@ public class CglibMain {
                 return 0;
             }
         });
-        return enhancer.create();// 创建一个代理对象
+        return enhancer.create(new Class[]{String.class}, new Object[]{"abc"});// 创建一个代理对象,指定调用父类含有参数的构造方法
+        // return enhancer.create();// 创建一个代理对象
     }
 
 

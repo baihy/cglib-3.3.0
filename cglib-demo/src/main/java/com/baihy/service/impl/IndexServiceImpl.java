@@ -11,6 +11,11 @@ import com.baihy.service.IndexService;
  */
 public class IndexServiceImpl implements IndexService {
 
+    private String name;
+
+    public IndexServiceImpl(String name) {
+        this.name = name;
+    }
 
     @Override
     public String index0(String param) {

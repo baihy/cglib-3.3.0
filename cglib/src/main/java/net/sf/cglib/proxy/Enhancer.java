@@ -312,6 +312,7 @@ public class Enhancer extends AbstractClassGenerator {
      *
      * @return a new instance
      */
+    // 使用目标类中的无参构造方法
     public Object create() {
         classOnly = false;
         argumentTypes = null;
@@ -328,6 +329,7 @@ public class Enhancer extends AbstractClassGenerator {
      * @param arguments     compatible wrapped arguments to pass to constructor
      * @return a new instance
      */
+    // 使用目标类中的有参的构造方法，并指定参数的类型和参数的值
     public Object create(Class[] argumentTypes, Object[] arguments) {
         classOnly = false;
         if (argumentTypes == null || arguments == null || argumentTypes.length != arguments.length) {
