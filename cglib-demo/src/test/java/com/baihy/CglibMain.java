@@ -24,6 +24,7 @@ public class CglibMain {
          *  通过源码我们知道，如果没有设置DebuggingClassWriter.DEBUG_LOCATION_PROPERTY环境变量，就不会输出class文件
          */
         System.setProperty(DebuggingClassWriter.DEBUG_LOCATION_PROPERTY, "d:/");
+
         IndexService target = new IndexServiceImpl();
         MethodInterceptor methodInterceptor = getMethodInterceptor();
         IndexService proxy = (IndexService) createProxy(methodInterceptor);
