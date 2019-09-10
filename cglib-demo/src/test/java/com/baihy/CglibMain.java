@@ -4,10 +4,9 @@ import com.baihy.service.IndexService;
 import com.baihy.service.impl.IndexServiceImpl;
 import net.sf.cglib.core.DebuggingClassWriter;
 import net.sf.cglib.core.DefaultGeneratorStrategy;
-import net.sf.cglib.proxy.Callback;
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.InvocationHandler;
-import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.*;
+
+import java.lang.reflect.Method;
 
 /**
  * @projectName: spring-study-demo
@@ -23,28 +22,55 @@ public class CglibMain {
          * 设置class文件的输出地址。
          *  通过源码我们知道，如果没有设置DebuggingClassWriter.DEBUG_LOCATION_PROPERTY环境变量，就不会输出class文件
          */
-        System.setProperty(DebuggingClassWriter.DEBUG_LOCATION_PROPERTY, "d:/");
+        System.setProperty(DebuggingClassWriter.DEBUG_LOCATION_PROPERTY, "d:/code");
 
         IndexService target = new IndexServiceImpl();
-        MethodInterceptor methodInterceptor = getMethodInterceptor();
-        IndexService proxy = (IndexService) createProxy(methodInterceptor);
-        proxy.index("huayang.bai");
+
+        InvocationHandler invocationHandler0 = getInvocationHandler0(target);
+        InvocationHandler invocationHandler1 = getInvocationHandler1(target);
+        InvocationHandler invocationHandler2 = getInvocationHandler2(target);
+
+        IndexService proxy = (IndexService) createProxy(new Callback[]{invocationHandler0, invocationHandler1, invocationHandler2});
+        proxy.index0("huayang.bai");
+        proxy.index1("huayang.bai");
+        proxy.index2("huayang.bai");
 
     }
 
-    public static Object createProxy(Callback callback) {
+    public static Object createProxy(Callback[] callbacks) {
         // cglib实现代理类的核心类，Enhancer译为：增强剂
         Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(IndexServiceImpl.class); // 设置代理类继承目标类
+        enhancer.setSuperclass(IndexServiceImpl.class); // 设置代理类继承目标类(可以是类，也可以是接口)
         // 目标类已经实现了UseService接口，而cglib的代理是通过继承来实现的，所以，代理类已经实现了UserService接口
         //enhancer.setInterfaces(new Class[]{UserService.class});
-        enhancer.setStrategy(new DefaultGeneratorStrategy());
-        enhancer.setCallback(callback);// 设置Callback就相当于是动态封装代理类和目标类中的逻辑
-        return enhancer.create();
+        enhancer.setStrategy(new DefaultGeneratorStrategy()); // 默认的，可设置，可不设置。
+        enhancer.setCallbacks(callbacks);// 设置Callback就相当于是动态封装代理类和目标类中的逻辑
+        //  Class clazz = enhancer.createClass();// 生成代理类的字节码对象
+        enhancer.setCallbackFilter(new CallbackFilter() {
+            /**
+             * CallbackFilter：作用是：为方法执行拦截器，accept方法的返回值就是Callbacks数组的索引。
+             */
+            @Override
+            public int accept(Method method) {
+                // System.out.println(method.getName());
+                if (method.getName().equals("index0")) {
+                    //表示的含义是：当方法的名称为index0是，使用callbacks数组下标为2的Callback
+                    return 2;
+                }
+                if (method.getName().equals("index1")) {
+                    return 1;
+                }
+                if (method.getName().equals("index2")) {
+                    return 0;
+                }
+                return 0;
+            }
+        });
+        return enhancer.create();// 创建一个代理对象
     }
 
 
-    public static InvocationHandler getInvocationHandler(Object target) {
+    public static InvocationHandler getInvocationHandler0(Object target) {
         return (proxy, method, args) -> {
             /**
              *
@@ -54,8 +80,47 @@ public class CglibMain {
              * @return
              * @throws Throwable
              */
-            System.out.println(proxy.getClass());
+            // System.out.println(proxy.getClass());
             System.out.println("##################目标方法调用之前########## #########");
+            System.out.println("0000000000000000000000000000" + method.getName());
+            Object result = method.invoke(target, args); // 注意：这里一定要使用目标对象来调用。
+            System.out.println("##################目标方法调用之后###################");
+            return result;
+        };
+    }
+
+    public static InvocationHandler getInvocationHandler1(Object target) {
+        return (proxy, method, args) -> {
+            /**
+             *
+             * @param proxy 表示是代理对象
+             * @param method 表示的是目标对象的方法
+             * @param args 表示的是目标对象的方法的参数
+             * @return
+             * @throws Throwable
+             */
+            // System.out.println(proxy.getClass());
+            System.out.println("##################目标方法调用之前########## #########");
+            System.out.println("111111111111111111111111" + method.getName());
+            Object result = method.invoke(target, args); // 注意：这里一定要使用目标对象来调用。
+            System.out.println("##################目标方法调用之后###################");
+            return result;
+        };
+    }
+
+    public static InvocationHandler getInvocationHandler2(Object target) {
+        return (proxy, method, args) -> {
+            /**
+             *
+             * @param proxy 表示是代理对象
+             * @param method 表示的是目标对象的方法
+             * @param args 表示的是目标对象的方法的参数
+             * @return
+             * @throws Throwable
+             */
+            // System.out.println(proxy.getClass());
+            System.out.println("##################目标方法调用之前########## #########");
+            System.out.println("222222222222222222222" + method.getName());
             Object result = method.invoke(target, args); // 注意：这里一定要使用目标对象来调用。
             System.out.println("##################目标方法调用之后###################");
             return result;

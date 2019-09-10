@@ -9,6 +9,8 @@ package com.baihy.service;
  */
 public interface IndexService {
 
-    String index(String param);
+    String index0(String param);
+    String index1(String param);
+    String index2(String param);
 
 }

@@ -33,14 +33,13 @@ import java.util.WeakHashMap;
  * applied before generation.
  */
 abstract public class AbstractClassGenerator<T>
-implements ClassGenerator
-{
+        implements ClassGenerator {
     private static final ThreadLocal CURRENT = new ThreadLocal();
 
     private static volatile Map<ClassLoader, ClassLoaderData> CACHE = new WeakHashMap<ClassLoader, ClassLoaderData>();
 
     private static final boolean DEFAULT_USE_CACHE =
-        Boolean.parseBoolean(System.getProperty("cglib.useCache", "true"));
+            Boolean.parseBoolean(System.getProperty("cglib.useCache", "true"));
 
     private GeneratorStrategy strategy = DefaultGeneratorStrategy.INSTANCE;
     private NamingPolicy namingPolicy = DefaultNamingPolicy.INSTANCE;
@@ -114,10 +113,10 @@ implements ClassGenerator
 
         public Object get(AbstractClassGenerator gen, boolean useCache) {
             if (!useCache) {
-              return gen.generate(ClassLoaderData.this);
+                return gen.generate(ClassLoaderData.this);
             } else {
-              Object cachedValue = generatedClasses.get(gen);
-              return gen.unwrapCachedValue(cachedValue);
+                Object cachedValue = generatedClasses.get(gen);
+                return gen.unwrapCachedValue(cachedValue);
             }
         }
     }
@@ -132,6 +131,7 @@ implements ClassGenerator
 
     protected static class Source {
         String name;
+
         public Source(String name) {
             this.name = name;
         }
@@ -164,6 +164,7 @@ implements ClassGenerator
      * <p>
      * Classes are cached per-<code>ClassLoader</code> using a <code>WeakHashMap</code>, to allow
      * the generated classes to be removed when the associated loader is garbage collected.
+     *
      * @param classLoader the loader to generate the new class with, or null to use the default
      */
     public void setClassLoader(ClassLoader classLoader) {
@@ -172,8 +173,9 @@ implements ClassGenerator
 
     /**
      * Override the default naming policy.
-     * @see DefaultNamingPolicy
+     *
      * @param namingPolicy the custom policy, or null to use the default
+     * @see DefaultNamingPolicy
      */
     public void setNamingPolicy(NamingPolicy namingPolicy) {
         if (namingPolicy == null)
@@ -215,14 +217,15 @@ implements ClassGenerator
     public boolean getAttemptLoad() {
         return attemptLoad;
     }
-    
+
     /**
      * Set the strategy to use to create the bytecode from this generator.
      * By default an instance of {@see DefaultGeneratorStrategy} is used.
      */
     public void setStrategy(GeneratorStrategy strategy) {
-        if (strategy == null)
+        if (strategy == null) {
             strategy = DefaultGeneratorStrategy.INSTANCE;
+        }
         this.strategy = strategy;
     }
 
@@ -238,7 +241,7 @@ implements ClassGenerator
      * that is being used to generate a class in the current thread.
      */
     public static AbstractClassGenerator getCurrent() {
-        return (AbstractClassGenerator)CURRENT.get();
+        return (AbstractClassGenerator) CURRENT.get();
     }
 
     public ClassLoader getClassLoader() {
@@ -270,7 +273,7 @@ implements ClassGenerator
      * @return the protection domain (<code>null</code> for using a default)
      */
     protected ProtectionDomain getProtectionDomain() {
-    	return null;
+        return null;
     }
 
     protected Object create(Object key) {
@@ -317,9 +320,9 @@ implements ClassGenerator
                         "Please file an issue at cglib's issue tracker.");
             }
             synchronized (classLoader) {
-              String name = generateClassName(data.getUniqueNamePredicate());              
-              data.reserveName(name);
-              this.setClassName(name);
+                String name = generateClassName(data.getUniqueNamePredicate());
+                data.reserveName(name);
+                this.setClassName(name);
             }
             if (attemptLoad) {
                 try {
@@ -352,5 +355,6 @@ implements ClassGenerator
     }
 
     abstract protected Object firstInstance(Class type) throws Exception;
+
     abstract protected Object nextInstance(Object instance) throws Exception;
 }

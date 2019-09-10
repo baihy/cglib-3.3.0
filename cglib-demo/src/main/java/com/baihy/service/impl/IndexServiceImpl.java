@@ -11,9 +11,22 @@ import com.baihy.service.IndexService;
  */
 public class IndexServiceImpl implements IndexService {
 
+
     @Override
-    public String index(String param) {
-        System.out.println("****************IndexServiceImpl.index****************");
-        return param + " hello world";
+    public String index0(String param) {
+        System.out.println("****************IndexServiceImpl.index0****************");
+        return param;
+    }
+
+    @Override
+    public String index1(String param) {
+        System.out.println("****************IndexServiceImpl.index1****************");
+        return param;
+    }
+
+    @Override
+    public String index2(String param) {
+        System.out.println("****************IndexServiceImpl.index2****************");
+        return param;
     }
 }
