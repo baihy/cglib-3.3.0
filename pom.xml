@@ -37,14 +37,6 @@
         <url>https://travis-ci.org/cglib/cglib</url>
     </ciManagement>
 
-    <licenses>
-        <license>
-            <name>ASF 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
     <!-- ====================================================================== -->
     <!-- P R O P E R T I E S -->
     <!-- ====================================================================== -->
@@ -52,8 +44,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <java.version.source>1.5</java.version.source>
-        <java.version.target>1.5</java.version.target>
+        <java.version.source>1.8</java.version.source>
+        <java.version.target>1.8</java.version.target>
         <asm.version>7.1</asm.version>
         <ant.version>1.10.3</ant.version>
         <jmh.version>1.21</jmh.version>
@@ -76,6 +68,7 @@
         <module>cglib-sample</module>
         <module>cglib-integration-test</module>
         <module>cglib-jmh</module>
+        <module>cglib-demo</module>
     </modules>
 
     <!-- ====================================================================== -->
