@@ -4,9 +4,11 @@ import com.baihy.service.IndexService;
 import com.baihy.service.impl.IndexServiceImpl;
 import net.sf.cglib.core.DebuggingClassWriter;
 import net.sf.cglib.core.DefaultGeneratorStrategy;
-import net.sf.cglib.proxy.*;
-
-import java.lang.reflect.Method;
+import net.sf.cglib.proxy.Callback;
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.InvocationHandler;
+import net.sf.cglib.proxy.MethodInterceptor;
+import org.junit.Test;
 
 /**
  * @projectName: spring-study-demo
@@ -17,25 +19,32 @@ import java.lang.reflect.Method;
  */
 public class CglibMain {
 
-    public static void main(String[] args) {
+    @Test
+    public void main() {
         /**
          * 设置class文件的输出地址。
          *  通过源码我们知道，如果没有设置DebuggingClassWriter.DEBUG_LOCATION_PROPERTY环境变量，就不会输出class文件
          */
         System.setProperty(DebuggingClassWriter.DEBUG_LOCATION_PROPERTY, "d:/code");
-
         IndexService target = new IndexServiceImpl("abc");
-
         InvocationHandler invocationHandler0 = getInvocationHandler0(target);
         InvocationHandler invocationHandler1 = getInvocationHandler1(target);
         InvocationHandler invocationHandler2 = getInvocationHandler2(target);
-
         IndexService proxy = (IndexService) createProxy(new Callback[]{invocationHandler0, invocationHandler1, invocationHandler2});
         proxy.index0("huayang.bai");
         proxy.index1("huayang.bai");
         proxy.index2("huayang.bai");
-
     }
+
+
+    @Test
+    public void test() {
+        System.setProperty(DebuggingClassWriter.DEBUG_LOCATION_PROPERTY, "d:/code");
+        IndexService indexService = new IndexServiceImpl("ddd");
+        IndexService proxy = (IndexService) createProxy(new Callback[]{getMethodInterceptor1(indexService)});
+        proxy.index0("huayang.bai");
+    }
+
 
     public static Object createProxy(Callback[] callbacks) {
         // cglib实现代理类的核心类，Enhancer译为：增强剂
@@ -46,10 +55,10 @@ public class CglibMain {
         enhancer.setStrategy(new DefaultGeneratorStrategy()); // 默认的，可设置，可不设置。
         enhancer.setCallbacks(callbacks);// 设置Callback就相当于是动态封装代理类和目标类中的逻辑
         //  Class clazz = enhancer.createClass();// 生成代理类的字节码对象
-        enhancer.setCallbackFilter(new CallbackFilter() {
-            /**
-             * CallbackFilter：作用是：为方法执行拦截器，accept方法的返回值就是Callbacks数组的索引。
-             */
+        /* enhancer.setCallbackFilter(new CallbackFilter() {
+         *//**
+         * CallbackFilter：作用是：为方法执行拦截器，accept方法的返回值就是Callbacks数组的索引。
+         *//*
             @Override
             public int accept(Method method) {
                 // System.out.println(method.getName());
@@ -65,7 +74,7 @@ public class CglibMain {
                 }
                 return 0;
             }
-        });
+        });*/
         return enhancer.create(new Class[]{String.class}, new Object[]{"abc"});// 创建一个代理对象,指定调用父类含有参数的构造方法
         // return enhancer.create();// 创建一个代理对象
     }
@@ -153,4 +162,17 @@ public class CglibMain {
         };
     }
 
+
+    public static MethodInterceptor getMethodInterceptor1(IndexService indexService) {
+        return (proxy, method, args, methodProxy) -> {
+            long l0 = System.currentTimeMillis();
+            Object result = method.invoke(indexService, args);// 这里是使用目标对象通过反射来调用目标对象的方法。
+            long l1 = System.currentTimeMillis();
+            Object result1 = methodProxy.invokeSuper(proxy, args); // 这里是通过代理对象来的调用代理对象的方法。来调用目标对象的方法。
+            long l2 = System.currentTimeMillis();
+            System.out.println("反射调用：" + (l1 - l0));
+            System.out.println("代理对象调用：" + (l2 - l1));
+            return result1;
+        };
+    }
 }

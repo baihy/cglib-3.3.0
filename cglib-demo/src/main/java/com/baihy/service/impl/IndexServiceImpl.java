@@ -20,6 +20,11 @@ public class IndexServiceImpl implements IndexService {
     @Override
     public String index0(String param) {
         System.out.println("****************IndexServiceImpl.index0****************");
+        /*try {
+            TimeUnit.SECONDS.sleep(2);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
         return param;
     }
 
