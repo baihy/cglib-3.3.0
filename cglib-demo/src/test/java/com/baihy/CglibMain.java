@@ -39,6 +39,7 @@ public class CglibMain {
 
     @Test
     public void test() {
+        // 设置生成class文件的路径
         System.setProperty(DebuggingClassWriter.DEBUG_LOCATION_PROPERTY, "d:/code");
         IndexService indexService = new IndexServiceImpl("ddd");
         IndexService proxy = (IndexService) createProxy(new Callback[]{getMethodInterceptor1(indexService)});
